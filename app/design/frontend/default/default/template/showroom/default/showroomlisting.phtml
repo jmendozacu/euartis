@@ -1,0 +1,95 @@
+<?php 
+    $showroom_login=Mage::helper('showroom')->getShowroomLogin();
+    $customer= Mage::getSingleton('customer/session')->getCustomer();
+    $customer_id=$customer->getId();
+    $facebook = Mage::helper('showroom/facebook')->createFacebook();
+    $userId = $facebook->getUser();
+    $stylist=$this->getStylist();
+?>
+<div class="showrooms">
+    <div class = "page-title category-title">
+        <h1><?php echo $this->__("showroom listing"); ?></h1>
+        <h2><?php echo $this->__("Click on a friend below to view her selections."); ?></h2>
+        <?php if(!$userId):?>
+        <a style="float:left;width:160px;height:22px" class="fb_button fb_button_medium" onclick="login();return false;" href="#">
+            <span class="fb_button_text"><?php echo $this->__('Connect to facebook') ?></span>
+        </a>
+        <?php endif;?>
+    </div>
+    <?php if(count($stylist)){ ?>
+    <div class="sh-toolbar">
+        <div class="sh-pager">
+            <div class="amount">
+                <strong><?php echo $this->__('Stylists'); ?></strong>
+            </div>  
+        </div>
+    </div>
+    <div class="stylist">
+        <?php echo $this->getChildHtml('showroom_stylist') ?>
+    </div>
+    <?php } ?>
+    <?php if(!$showroom_login->getId()){ ?>
+    <div class="creat-showroom" align="center">
+        <button class="button create" onclick="setLocation('<?php echo $this->getUrl('showroom/create/index') ?>')" title="Create Showroom" type="button">
+        <span><span><?php echo $this->__('Build your showroom'); ?></span></span>
+        </button>
+    </div>
+    <?php } ?>
+    </br>
+    <div class="sh-toolbar" id="listing">
+    <div class="sh-pager">
+        <p class="amount">
+            <strong><?php echo $this->__('Showroom Listing'); ?></strong>
+        </p>
+    </div>
+    <div class="sh-sorter">
+        <div class="sort-by"><?php echo $this->__('Sort by '); ?>
+        <a <?php if($this->getRequest()->getParam('order')=='popular'):?> class="active" <?php endif;?> href="<?php echo $this->getUrl('*/*/*').'?order=popular&direction=desc#listing'; ?>"><?php echo $this->__('Most Followed'); ?></a>
+        &nbsp;|&nbsp;
+        <a <?php if($this->getRequest()->getParam('order','created')=='created'):?> class="active" <?php endif;?>  href="<?php echo $this->getUrl('*/*/*').'?order=created&direction=desc#listing'; ?>"><?php echo $this->__('Latest'); ?></a>
+            <?php 
+                $order=$this->getRequest()->getParam('order','created');
+                $link='?order='.$order;
+             ?>
+            <?php if($this->getRequest()->getParam('direction','desc')=='desc'):?>
+                <a href="<?php echo $link.'&direction=asc#listing'?>" title="ASC"><img src="<?php echo $this->getSkinUrl('images/i_desc_arrow.gif') ?>" alt="<?php echo $this->__('Set Ascending Direction') ?>" class="v-middle" /></a>
+            <?php else: ?>
+                <a href="<?php echo $link.'&direction=desc#listing'?>" title="DESC"><img src="<?php echo $this->getSkinUrl('images/i_asc_arrow.gif') ?>" alt="<?php echo $this->__('Set Descending Direction') ?>" class="v-middle" /></a>
+            <?php endif; ?>
+        </div>
+    </div>
+    </div>
+    <div class="listing">
+    <?php echo $this->getChildHtml('showroom_showroomlisting') ?>
+    </div>
+</div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script type="text/javascript">
+        <?php //if (!$user) { ?>
+        var newwindow;
+        var intId;
+        function login(refresh){
+            var  screenX    = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
+            var  screenY    = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop;
+            var  outerWidth = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth;
+            var  outerHeight = typeof window.outerHeight != 'undefined' ? window.outerHeight : (document.body.clientHeight - 22);
+            var  width    = 500;
+            var  height   = 270;
+            var  left     = parseInt(screenX + ((outerWidth - width) / 2), 10);
+            var  top      = parseInt(screenY + ((outerHeight - height) / 2.5), 10);
+            var  features = (
+                    'width=' + width +
+                    ',height=' + height +
+                    ',left=' + left +
+                    ',top=' + top
+                  );
+            var url = '<?php echo Mage::getBlockSingleton('showroom/friends')->getFbLoginButtonUrl() ?>';
+            var newwindow=window.open(url,'',features);
+        
+            if (window.focus) {
+                newwindow.focus()
+            }
+            return false;
+        }
+        <?php //} ?>
+    </script>

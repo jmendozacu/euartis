@@ -1,0 +1,24 @@
+    <?php // Grid Mode ?>
+    <?php 
+    $size=Mage::helper('showroom')->getGeneralConfig(size_image_product);
+    $arrsize=explode('x',$size);
+    $_productCollection=$this->getCollection();
+    ?>
+    <?php $_collectionSize = count($_productCollection) ?>
+    <?php $_columnCount =Mage::helper("showroom")->getShowroomConfig('number_column_product'); ?>
+    <?php $i=0; foreach ($_productCollection as $_product): ?>
+        <?php if ($i++%$_columnCount==0): ?>
+        <ul class="products-grid">
+        <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?><?php if ($this->isFromShowroom($_product->getId())) echo ' active';?>"  id="product_<?php echo $_product->getId()?>">
+            	<input class="input-text" type="hidden" name="product[<?php echo $_product->getId()?>]" value="<?php //if ($this->isFromShowroom($_product->getId())) echo '1'; ?>" id="input_product_<?php echo $_product->getId()?>"/>
+            	<a href="javascript:selectProduct('<?php echo $_product->getId()?>')">
+            		<img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize($arrsize[0],$arrsize[1]); ?>" width="<?php echo $arrsize[0] ?>" height="<?php echo $arrsize[1] ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+                <h2 class="product-name"><?php echo $this->helper('catalog/output')->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+            	</a>
+                <?php echo Mage_Catalog_Block_Product::getPriceHtml($_product, true) ?>
+            </li>
+        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+        </ul>
+        <?php endif ?>
+        <?php endforeach ?>

@@ -1,0 +1,186 @@
+<?php
+	$session = Mage::getSingleton('showroom/session');
+	$profile = Mage::helper('showroom')->getProfileByCustomerId($session->getCustomer()->getId());
+	$facebookId = $profile->getFacebookId();
+	$facebook = Mage::helper('showroom/facebook')->createFacebook();
+	$userIdApp = $facebook->getUser();
+?>
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+		FB.init({
+ 			appId  : '<?php echo Mage::helper("showroom/facebook")->getAppId() ?>',
+ 			status : true,
+ 			cookie : false
+		});
+		var invited = 1;
+function setCookie(c_name,value,exdays)
+{
+var exdate=new Date();
+exdate.setDate(exdate.getDate() + exdays);
+var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+document.cookie=c_name + "=" + c_value;
+}
+Event.observe(window, 'load', function(){
+		var facebook_userid =null;
+		FB.api('/me', function(me){
+			if (me.id) {
+				facebook_userid=me.id;			
+				if(facebook_userid != '<?php echo $facebookId?>'){
+					if(facebook_userid != '<?php echo $userIdApp?>'){
+						invited = 3;
+					}else{
+						invited = 2;
+						$('fb-button').innerHTML = '<a class="fb_button fb_button_medium" href="<?php echo $this->getUrl("showroom/index/reconnect",array("p"=>$profile->getProfileId())) ?>?fb='+facebook_userid+'"><span class="fb_button_text"><?php echo $this->__('Reconnect to facebook') ?></span></a>';
+					}
+				}else{
+					invited = 3;
+				}
+			}else{
+				
+				//$('fb-button').innerHTML = '<a class="fb_button fb_button_medium" onclick="login();return false;" href="javascript:void(0)"><span class="fb_button_text"><?php echo $this->__("Connect to facebook") ?></span></a>';
+			}
+    	});
+		invited = 4;
+});
+
+//]]>
+</script>
+<div class="showrooms">
+	<div class = "page-title category-title">
+		<h1><?php echo $this->__("Invite friends on facebook"); ?></h1>
+        <h2><?php echo $this->__("Click on a friend below to invite."); ?></h2>
+		<div id="fb-button"></div>
+    </div>
+<?php 
+	$friends = $this->getFBinvites();
+	$total=count($friends);
+	$page_count=ceil($total/50);
+	$page	 = $this->getRequest()->getParam('page');
+	if( $page<1 || $page>$page_count)
+		$page=1;
+?>
+<div class="control">
+	<?php if($page>1){ ?>
+		<button style="float:left" class="button" onclick="window.location='<?php echo $this->getUrl('showroom/index/fbinvite',array('page'=>$page-1))?>'" >
+			<span><span><?php echo $this->__('<< Previous')?></span></span>
+		</button>
+	<?php } ?>
+	<?php if($page < $page_count){ ?>
+		<button style="float:right" class="button" onclick="window.location='<?php echo $this->getUrl('showroom/index/fbinvite',array('page'=>$page+1))?>'" >
+			<span><span><?php echo $this->__('Next >>')?></span></span>
+		</button>	
+	<?php } ?>
+</div>
+<?php
+	$begin=($page-1)*50;
+	for($i=$begin;$i<$begin+50;$i++) {
+	if($i+1>$total) break;
+?>
+<?php if (($i)%10==0): ?>
+    <ul class="fbinvite">
+<?php endif ?>
+		<li id="item_<?php echo $friends[$i]['id'] ?>" class="item<?php if(($i)%10==0): ?> first<?php elseif($i+1%10==0): ?> last<?php endif; ?>">
+<?php
+		$avatar=$this->getAvatar($friends[$i]['id']);
+?>
+			<div class="face-friend">
+            <div class="invite_face_holder" id="invite_face_holder_<?php echo $friends[$i]['id'] ?>">
+					<img style="width: 50px;height:50px" src="<?php echo $avatar ?>" />
+                	<span><?php echo $friends[$i]['name'] ?></span>
+            </div>
+            <div class="hover_send_invite" id="hover_send_invite_<?php echo $friends[$i]['id'] ?>" style="display: none;">
+            	<a href="javascript:void(0)" onclick='invite(<?php echo $friends[$i]['id'] ?>)'>
+				<img src="http://static2.sd-assets.com/static/friends/overlay_invite-d74733e1c1f2db225069ec3ab66bebf3.png" alt="Hover send invite">
+				</a>
+            </div>
+			<div class="overlay_invite_sent" id="overlay_invite_sent_<?php echo $friends[$i]['id'] ?>" style="visibility: hidden;">
+				<img src="http://static3.sd-assets.com/static/friends/overlay_sent-737d70485fc7df61d5a69533c4152948.png" alt="Overlay sent">
+            </div>
+			</div>
+<?php 
+	$tid='hover_send_invite_'.$friends[$i]["id"];
+	$liid='item_'.$friends[$i]["id"];
+?>
+<script type="text/javascript">
+//<![CDATA[
+	$('<?php echo $liid ?>').observe('mouseover', function() {
+		$('<?php echo $tid ?>').style.display='block';
+	});
+	$('<?php echo $liid ?>').observe('mouseout', function() {
+		$('<?php echo $tid ?>').style.display='none';
+	});
+ //]]>
+</script>
+		</li>
+<?php if (($i+1)%10==0): ?>
+    </ul>
+<?php endif ?>
+<?php } ?>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+FB.init({
+ appId  : '<?php echo Mage::helper("showroom/facebook")->getAppId() ?>',
+ status : true,
+ cookie : true
+});
+
+
+function invite(id) {
+	if(invited == 2){
+		alert('Please re connect to facebook !');
+		return false;
+	}
+	var obj = {
+		method: 'apprequests',
+		message: '<?php echo Mage::helper('showroom')->getReferConfig('invite_message');?>',
+		to: id
+	};
+	function callback(response) {
+	if(response)
+		$('overlay_invite_sent_'+id).style.visibility='visible';
+	}
+	FB.ui(obj, callback);
+}
+
+function checkFacebook(){
+	if(invited == 2){
+		alert('Please re connect to facebook !');
+		return false;
+	}
+	return true;
+}
+ //]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+        var newwindow;
+        var intId;
+        function login(){
+            var  screenX    = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
+            var  screenY    = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop;
+            var  outerWidth = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth;
+            var  outerHeight = typeof window.outerHeight != 'undefined' ? window.outerHeight : (document.body.clientHeight - 22);
+            var  width    = 500;
+            var  height   = 270;
+            var  left     = parseInt(screenX + ((outerWidth - width) / 2), 10);
+            var  top      = parseInt(screenY + ((outerHeight - height) / 2.5), 10);
+            var  features = (
+                    'width=' + width +
+                    ',height=' + height +
+                    ',left=' + left +
+                    ',top=' + top
+                  );
+        
+            newwindow=window.open('<?php echo Mage::getBlockSingleton('showroom/fbinvite')->getFbLoginButtonUrl() ?>','Connect to facebook',features);
+        
+            if (window.focus) {
+                newwindow.focus()
+            }
+            return false;
+        }
+ //]]>
+</script>

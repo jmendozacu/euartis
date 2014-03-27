@@ -1,0 +1,59 @@
+<?php $url = $this->getFbLoginUrl()?>
+<?php $showrooms = $this->getFriendShowroom();?>
+<?php if(count($showrooms)): ?>
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<div class="showrooms-left">
+<div class="block block-friends">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Friends'); ?></span></strong>
+    </div>
+    <div class="block-content">
+    <ul>      
+      
+      <?php foreach($showrooms as $showroom): ?>
+        <?php $profile = Mage::getModel('showroom/showroomprofile')->load($showroom->getProfileId());?>
+        <?php 
+          $imageresize=Mage::helper('showroom/image')->init($profile,'showroom'.DS.'profile'.DS.$profile->getId())->resize(50);
+        ?>
+        <li>
+          <a href="<?php echo $this->getUrl('showroom/index/overview',array('id'=>$showroom->getId()));?>">
+            <div class="showroom-avatar-menu">
+              <img src="<?php echo $imageresize ?>"/>
+              </div>
+            <h5><?php echo $profile->getName(); ?></h5>
+          </a>
+        </li>
+      <?php endforeach; ?>
+      
+    </ul>
+    <a style="float:left;" href="javascript:void(0);" onclick="sendRequestViaMultiFriendSelector(); return false;"><strong><?php echo $this->__('Invite');?></strong></a>
+    <a style="float:right;" href="<?php echo $this->getUrl('showroom/index/friends') ?>"><strong><?php echo $this->__('View All');?></strong></a>
+  </div>
+</div>
+</div>
+<?php endif; ?>
+    
+    <script>
+      FB.init({
+        appId  : '<?php echo Mage::helper("showroom/facebook")->getAppId() ?>',
+        frictionlessRequests: true,
+       // channelUrl : '<?php echo $this->getUrl("showroom")?>',
+        xfbml: true, cookie: true, oauth: true 
+      });
+
+      function sendRequestViaMultiFriendSelector() {
+        FB.ui({method: 'apprequests',
+          new_style_message: false,
+         // invite:true,
+        //  display: 'dialog',
+         // title  : 'Invite a Friend',
+        // redirect_uri:'<?php echo $this->getUrl("showroom"); ?>'
+          message: '<?php echo Mage::helper("showroom")->preProcessStr(Mage::helper("showroom")->getReferConfig("invite_message"));?>'
+        }, requestCallback);
+      }
+      
+      function requestCallback(response) {
+        // Handle callback here
+      }
+    </script>

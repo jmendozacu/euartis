@@ -1,0 +1,67 @@
+<?php 
+    $profile=$this->getProfile();
+    $showroom=$this->getShowroom();
+?>
+<div class="my-account">
+	<div class="page-title">
+    <h1><?php echo $this->__('Edit Profile Information') ?></h1>
+	</div>
+	
+<form id="form-validate" METHOD=POST ENCTYPE="multipart/form-data" action="<?php echo $this->getUrl('showroom/setting/save')  ?>">
+	<div class="fieldset">
+        <h2 class="legend"><?php echo $this->__('Profile Information') ?></h2>
+        <?php 
+            $imageresize=Mage::helper('showroom/image')->init($profile,'showroom'.DS.'profile'.DS.$profile->getId())->resize(150);
+        ?>
+        <div id="image_avatar_showroom">
+                <img align="middle"  src="<?php echo $imageresize ?>" />
+        </div>
+        <ul class="form-list" id="showroom_info">
+        	<li class="input-box">
+        		<label for="name"><?php echo $this->__('Name:  ') ?></label>
+        		<input  id="firstname" class="input-text required-entry"  type="text" name="name" value="<?php echo $profile->getName() ?>"/>
+        	</li>
+            <li class="input-box">
+                <label for="name"><?php echo $this->__('Email  ') ?></label>
+                <input id="firstname" class="input-text required-entry"  type="text" name="customer_email" value="<?php echo $profile->getCustomerEmail() ?>"/>
+            </li>
+        	<li  class="input-box">
+				<label for="file"><?php echo $this->__('Change Avatar') ?></label>
+				<input type="file" class="input-file" title="Image"  name="images" id="image">
+			</li>
+            <li class="input-box">
+				<input  type="checkbox" <?php if ($profile->getIsReceiveMail()==1) { ?> checked="checked" <?php } ?> name="is_receive_mail" value="1" /><?php echo $this->__('Receive email when there is any change in the showrooms that you follow.') ?><br />
+            </li>
+            <li id="status_showroom" class="input-box">
+                <label><?php echo $this->__('Is private') ?></label>
+                <select name="is_private">
+                    <option selected="selected" value="<?php echo $showroom->getIsPrivate(); ?>">
+                    <?php 
+                        if ($showroom->getIsPrivate())
+                            echo $this->__('Yes');
+                        else echo $this->__('No');
+                    ?>
+                    </option>
+                    <?php if ($showroom->getIsPrivate()){ ?>
+                        <option value="0"><?php echo $this->__('No') ?></option>
+                    <?php }else{ ?>
+                        <option value="1"><?php echo $this->__('Yes') ?> </option>
+                    <?php } ?>
+                </select> 
+            </li>
+            <!--
+            <li>
+            	<a href="<?php echo $this->getUrl('showroom/setting/editshowroom') ?>"><?php echo $this->__('Edit showroom') ?></a>
+            </li>
+            -->
+
+        </ul>
+    </div>
+
+
+    <div class="buttons-set">
+        <p class="back-link"><a href="<?php echo $this->getUrl('showroom') ?>"><small>« </small><?php echo $this->__('Back'); ?></a></p>
+        <button class="button" title="Save" type="submit"><span><span><?php echo $this->__('Save') ?></span></span></button>
+    </div>
+</form>
+</div>

@@ -1,0 +1,149 @@
+<div class="showrooms">
+<div class = "page-title">
+    <h1><?php echo $this->__('Edit my showroom'); ?></h1>
+	<div class="showroom-recreate">    
+		<a onclick="window.location = '<?php echo $this->getUrl('showroom/create/index')?>'"  name="showroom-recreate-btn" id="showroom-recreate">
+			<span>
+                <?php echo $this->__('Re-build showroom'); ?>
+            </span>
+		</a>
+</div>
+</div>
+
+<?php
+    $size=Mage::helper('showroom')->getGeneralConfig(size_image_product);
+    $arrsize=explode('x',$size);
+    $_productCollection=$this->getLoadedProductCollection();
+    $_helper = $this->helper('catalog/output');
+?>
+
+<div class="sh-toolbar" id="listing">
+    <div class="sh-pager">
+        <p class="amount">
+            <strong><?php echo $this->__(''); ?></strong>
+        </p>
+    </div>
+    <div class="sh-sorter edit-showroom-toolbar">
+        <div class="sort-by"><?php echo $this->__('Items Filter '); ?>
+            <select id="select" onchange="onchage(this.value)">
+                <option <?php if( $this->getRequest()->getParam('view')=='' && $this->getRequest()->getParam('view')!='all'):?> selected="selected" <?php endif;?> value="<?php echo $this->getUrl('*/*/view').'?view=all'; ?>"><?php echo $this->__('All'); ?></option>
+                <option <?php if($this->getRequest()->getParam('view')=='in'):?> selected="selected" <?php endif;?> value="<?php echo $this->getUrl('*/*/view').'?view=in'; ?>"><?php echo $this->__('In my showroom'); ?></option>
+                <option <?php if($this->getRequest()->getParam('view')=='nin'):?> selected="selected" <?php endif;?> value="<?php echo $this->getUrl('*/*/view').'?view=nin'; ?>"><?php echo $this->__('Not in my showroom'); ?></option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<?php if(!$_productCollection->count()): ?>
+<p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+<?php else: ?>
+    <div class="category-products edit-showroom" id="edit-showroom">
+    <?php // Grid Mode ?>
+
+    <?php $_collectionSize = $_productCollection->count() ?>
+    <?php $_columnCount =Mage::helper("showroom")->getShowroomConfig('number_column_product'); //$this->getColumnCount(); ?>
+    <?php $i=0; foreach ($_productCollection as $_product): ?>
+        <?php if ($i++%$_columnCount==0): ?>
+        <ul class="products-grid">
+        <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?><?php if ($this->isFromShowroom($_product->getId())) echo ' active';?>"  id="product_<?php echo $_product->getId()?>">
+                <a href="javascript:selectProduct('<?php echo $_product->getId()?>')">
+                    <img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize($arrsize[0],$arrsize[1]); ?>" width="<?php echo $arrsize[0] ?>" height="<?php echo $arrsize[1] ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+                <h2 class="product-name"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+                </a>
+                <?php echo $this->getPriceHtml($_product, true) ?>
+            </li>
+        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+        </ul>
+        <?php endif ?>
+        <?php endforeach ?>
+        <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+    </div>
+<div id="showroom-load-more" style="display:none;">
+    <div class="showroom-load-more-loading">
+        <img alt="<?php echo $this->__('Loading') ?>..." src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" /><br />
+        <?php echo $this->__('Loading') ?>...
+    </div>
+</div>
+<div class="sh-toolbar" id="listing">
+    <div class="sh-pager">
+        <div class="amount" id="showroom-edit-loadmore" <?php if(!$this->isLoadMore()){ ?> style="display:none" <?php } ?>>
+            
+               <a onclick="loadmore('<?php echo $i ?>')" name="loadmore" id="showroom-loadmore">
+                       <span> <?php echo $this->__('view more'); ?></span>
+				</a>		
+        </div>
+    </div>
+    <div class="sh-sorter edit-showroom-toolbar">
+        <form id="showroom-edit-form" action="<?php echo $this->getUrl('showroom/edit/save')?>" method="POST" >
+            <div class="showroom-edit-submit-end" id="showroom-edit-submit-end">
+                <button type="submit" class="button validation-passed" title="Save" name="save">
+                    <span><span><?php echo $this->__('save') ?></span></span>
+                </button>
+            </div>
+            <input class="input-text" type="hidden" name="products" value="" id="input_products"/>
+        </form>
+    </div>
+</div>
+<input type="hidden" name="current-page" id="current-page" value="2" />
+
+<?php endif; ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+
+    var products='';
+    function selectProduct(id){
+        var input = $('input_products');
+        var product=$('product_'+id)
+        if(input){
+            if(product.hasClassName('active')){
+                product.removeClassName('active');
+                products =products+','+id+',-1';
+                input.value = products;
+            }else{
+                product.addClassName('active');
+                products =products+','+id+',1';
+                input.value = products;
+            }
+        }
+    }
+    function loadmore(index){
+        $('showroom-load-more').style.display='';
+        $('showroom-edit-loadmore').style.display='';
+        var view = $('select').options[$('select').selectedIndex].value;
+        var url = view+'&page='+$('current-page').value+'&products='+products;
+        $('current-page').value = parseInt($('current-page').value) + 1;
+        var request = new Ajax.Request(url,{
+                onComplete: function(response){
+                    if(response.responseText=='1'){
+                        $('showroom-edit-loadmore').style.display='none';
+                    }else{
+                        $('edit-showroom').innerHTML = $('edit-showroom').innerHTML + response.responseText.evalJSON();
+                    }
+                    $('showroom-load-more').style.display='none';
+                }
+            }
+        );
+    }
+    function onchage(url){
+        $('showroom-edit-loadmore').style.display='';
+        url=url+'<?php echo "&page=1&products=" ?>'+products;
+        var request = new Ajax.Request(url,{
+                onComplete: function(response){
+                    if(response.responseText=='1'){
+                        $('edit-showroom').innerHTML='<?php echo $this->__("There are no products matching the selection.") ?>';
+                        $('showroom-edit-loadmore').style.display='none';
+                    }else{
+                        $('edit-showroom').innerHTML=response.responseText.evalJSON();
+                    }
+                    $('current-page').value = 2;
+                }
+            }
+        );
+    }
+//]]>
+</script>
+
+
+    

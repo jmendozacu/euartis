@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+ <default>
+   <reference name="right">
+			<remove name="right.permanent.callout"/>
+			<remove name="livechat.chat"/>
+			<remove name="cart_sidebar"/>
+			<remove name="sale.reorder.sidebar"/>
+   </reference>
+   <reference name="left">
+			<remove name="left.permanent.callout"/>
+			<remove name="right.newsletter"/>
+			<remove name="cart_sidebar"/>
+			<remove name="sale.reorder.sidebar"/>
+   </reference>
+ </default>
+</layout>

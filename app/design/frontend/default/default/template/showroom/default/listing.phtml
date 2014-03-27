@@ -1,0 +1,104 @@
+<?php 
+    $showrooms=$this->getShowrooms();
+    $customer= Mage::getSingleton('customer/session')->getCustomer();
+    $customer_id=$customer->getId();
+    if(count($showrooms)){
+?>
+<div class="showrooms">
+    <div class="showroomlisting">
+    <?php $_columnCount =4;?>
+    <?php $i=0; foreach ($showrooms as $showroom): ?>
+        <?php 
+            $following=Mage::helper('showroom')
+                ->getFollowing($showroom->getShowroomId(),$customer_id);
+            $profile=$this->getProfileByShowroom($showroom);
+            if ($i++%$_columnCount==0): 
+        ?>
+        <ul class="products-grid showroom-grid">
+        <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+                <div class="showroom-image">
+                    <?php 
+                        $imageresize=Mage::helper('showroom/image')->init($profile,'showroom'.DS.'profile'.DS.$profile->getId())->resize(150);
+                        $h=0;$w=0;
+                        $size = getimagesize($imageresize);
+                        if($size[0]<$size[1]){
+                            $h=($size[1]-$size[0])/2;
+                        }else{
+                            $w=($size[0]-$size[1])/2;
+                        }
+                    ?>
+                    <a href="<?php  echo $this->getUrl('showroom/index/overview').'id/'.$showroom->getShowroomId(); ?>">
+                        <img src="<?php echo $imageresize ?>" />
+                    </a>
+                </div>
+                <div class="showroom-detail">
+                    <div class="showroom-name"><span><?php echo $profile->getName();?></span></div>
+                    <div class="actions">
+                        <div class="button-set">
+                        <div id="ajaxfollow_<?php echo $showroom->getId() ?>" <?php if($following->getStatus()==1 ){ ?>style="display: none;" <?php  } ?>>
+                            <button class="button ajaxfollow-popup-overlay" onclick="follow('<?php echo $showroom->getShowroomId() ?>');"><span><span><span><div id="follow-followslisting_<?php echo $showroom->getId() ?>"><?php echo $this->__('Follow') ?> (<?php echo $showroom->getFollowNumber() ?>)</div></span></span></span></button>
+                        </div>
+                        <div id="ajaxunfollow_<?php echo $showroom->getId() ?>" <?php if($following->getStatus()==0 ){ ?>style="display: none;" <?php  } ?>>
+                            <button title="<?php echo $this->__('Unfollows') ;?>" class="button followded ajaxunfollow-popup-overlay" onclick="unfollow('<?php echo $showroom->getShowroomId() ?>');"><span><span><span><div id="unfollow-followslisting_<?php echo $showroom->getId() ?>"><?php echo $this->__('Follow') ?> (<?php echo $showroom->getFollowNumber() ?>)</div></span></span></span></button>
+                        </div>
+                        </div>
+                   
+                    </div>
+                </div>    
+            </li>
+        <?php if ($i%$_columnCount==0): ?>
+        </ul>
+        <?php endif ?>
+        <?php ;endforeach ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+function follow(showroom){
+    <?php
+        if(!$customer_id){
+            $authUrl = $this->helper('core/url')->getCurrentUrl();
+            Mage::getSingleton('customer/session')->setBeforeAuthUrl($authUrl);
+        }
+    ?>
+    var customer_id='<?php echo $customer_id; ?>';
+    if (!customer_id){
+        url='<?php echo $this->getUrl("customer/account/login") ?>';
+        window.location.href = url;
+        return;
+    }
+    $('ajaxunfollow_'+showroom).show();
+    $('ajaxfollow_'+showroom).hide();
+    var url = '<?php echo $this->getUrl("showroom/follow/follow")?>?showroom='+showroom;
+        var request = new Ajax.Request(url,{
+                onComplete: function(response){
+                    if(response.status == 200){
+                        $('follow-followslisting_'+showroom).innerHTML='<?php echo $this->__("Follow") ?> ('+response.responseText+')';
+                        $('unfollow-followslisting_'+showroom).innerHTML='<?php echo $this->__("Follow") ?> ('+response.responseText+')';
+                        $('follows_'+showroom).innerHTML=response.responseText;
+                    }
+                }
+            }
+        );
+}
+function unfollow(showroom){
+    $('ajaxunfollow_'+showroom).hide();
+    $('ajaxfollow_'+showroom).show();
+    var url = '<?php echo $this->getUrl("showroom/follow/unfollow")?>?showroom='+showroom;
+        var request = new Ajax.Request(url,{
+                onComplete: function(response){
+                    if(response.status == 200){
+                        $('follow-followslisting_'+showroom).innerHTML='<?php echo $this->__("Follow") ?> ('+response.responseText+')';
+                        $('unfollow-followslisting_'+showroom).innerHTML='<?php echo $this->__("Follow") ?> ('+response.responseText+')';
+                        $('follows_'+showroom).innerHTML=response.responseText;
+                    }
+                }
+            }
+        );
+}
+//]]>
+</script>
+
+<?php } ?>

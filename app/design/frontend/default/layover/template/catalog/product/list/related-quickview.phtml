@@ -1,0 +1,18 @@
+<?php if ($this->getItems()->getSize()): ?>
+<div class="gallery-area3">
+    <p><?php echo $this->__('People that bought this item also bought') ?></p>
+    <div id="carusel3" class="gallery3">
+        <a class="link-prev" href="#"><?php echo $this->__('prev') ?></a>
+        <div class="gallery-holder">
+            <ul>
+            	<?php foreach($this->getItems() as $_item): ?>
+                <li>
+                	<a href="<?php echo $_item->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image')->resize(60) ?>" alt="<?php echo $this->htmlEscape($this->getImageLabel($_item, 'small_image')) ?>" width="60" height="60" /></a>
+                </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+        <a class="link-next" href="#"><?php echo $this->__('next') ?></a>
+    </div>
+</div>
+<?php endif ?>

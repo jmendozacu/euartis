@@ -1,0 +1,7 @@
+<?php
+	$product=Mage::registry('current_product');
+	$collection = Mage::helper('showroom')->_getProductCollection();
+	if (in_array($product->getId(),$collection->getAllIds())){
+?>
+	<a href="<?php echo $this->getUrl('showroom/setting/addtoshowroom').'?id='.$product->getId(); ?>">Add To Showroom</a>
+<?php } ?>

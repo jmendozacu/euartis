@@ -1,0 +1,34 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<div style="font:13px/1.35em Verdana, Arial, Helvetica, sans-serif;">
+    <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; font:13px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
+        <tr>
+            <td align="center" valign="top">
+                <!-- [ header starts here] -->
+                <table cellspacing="0" cellpadding="0" border="0" width="650">
+                    <tr>
+                        <td valign="top">
+                            <p><a href="{{store url="showroom"}}" style="color:#1E7EC8;"><img src="{{skin url="images/logo_email.gif" _area='frontend'}}" alt="{{var store.getFrontendName()}}" border="0"/></a></p></td>
+                    </tr>
+                </table>
+
+                <!-- [ middle starts here] -->
+                <table cellspacing="0" cellpadding="0" border="0" width="650">
+                    <tr>
+                        <td valign="top">
+                            <p><strong>Dear {{var customer.name}}</strong></p>
+                            <p>We would like to inform you that <strong>{{var profile.getName()}}</strong> 's showroom has been updated.</p>
+                            <p>You could click on this link for more update details: <a href="{{store url=""}}{{var link}}" style="color:#1E7EC8;">{{var profile.getName()}}</a>.</p>
+                            <p align="left">&nbsp;&nbsp;
+                                <a href="{{store url=""}}{{var link}}" style="color:#1E7EC8;"><img  src="{{var image}}" alt="{{var profile.getName()}}" border="0"/></a>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;"><center><p style="font-size:12px; margin:0;">Thank you again, <strong>{{var store.getFrontendName()}}</strong></p></center></td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</div>

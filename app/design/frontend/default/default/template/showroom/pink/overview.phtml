@@ -1,0 +1,202 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+?>
+
+
+<?php 
+    $size=Mage::helper('showroom')->getGeneralConfig(size_image_product);
+    $arrsize=explode('x',$size);
+    $id  = $this->getRequest()->getParam('id');
+    $title='My Showroom';
+    if($id) $add='id/'.$id;
+    $showroomlogin=Mage::helper('showroom')->getShowroomLogin();
+    $showroom_current=Mage::helper('showroom')->getShowroomCurrent($id);
+    $profile=Mage::getModel('showroom/showroomprofile')->load($showroom_current->getProfileId());
+    if($id && $showroomlogin->getShowroomId()!=$id)
+        $title=$profile->getName().' \'s showroom';
+    $customer= Mage::getSingleton('customer/session')->getCustomer();
+	$customer_id=$customer->getId();
+    $profileId=Mage::helper('showroom')->getProfileByCustomerId($customer_id)->getProfileId();
+    $following=Mage::helper('showroom')
+                ->getFollowing($showroom_current->getShowroomId(),$customer_id);
+?>
+
+<div class="showrooms">
+<div class="page-title category-title">
+    <h1><?php echo $this->__($title); ?>
+	<div class="actions">
+	<?php if ($showroom_current->getProfileId()!=$profileId){ ?>
+<div id="ajaxfollow_<?php echo $showroom_current->getId() ?>" <?php if($following->getStatus()==1 ){ ?>style="display: none;" <?php  } ?>>
+    <button class=" button ajaxfollow-popup-overlay" onclick="follow('<?php echo $showroom_current->getShowroomId() ?>');"><span><span><span><?php echo $this->__('Follow') ?> </span></span></span></button>
+</div>
+<div id="ajaxunfollow_<?php echo $showroom_current->getId() ?>" <?php if($following->getStatus()==0 ){ ?>style="display: none;" <?php  } ?>>
+    <button title="<?php echo $this->__('Unfollows') ;?>" class="button followded ajaxunfollow-popup-overlay" onclick="unfollow('<?php echo $showroom_current->getShowroomId() ?>');"><span><span><span><?php echo $this->__('Follow') ?> </span></span></span></button>
+</div>
+<?php } ?>
+</div></h1>
+	
+</div>
+
+<div id='fb-root'>
+    <script src='http://connect.facebook.net/en_US/all.js'></script>
+    <button class="share" onclick="postToFeed(); return false;"><span><span><span><?php echo $this->__('Share on facebook') ?></span></span></span></button>
+    <p id='msg'></p>
+    <div class="view-all">
+    <strong>
+        <a href="<?php echo $this->getUrl('showroom/index/index').$add ?>"><?php echo $this->__('View all'); ?></a>
+    </strong>
+    </div>
+</div>
+<div class="showroom category-products">
+<?php
+    $_helper = $this->helper('catalog/output');
+    $categorys=$this->getShowroomCategorys();
+    //Zend_Debug::dump($categorys->getData());
+    foreach ($categorys as $category) {
+		//Zend_Debug::dump($category->getData());
+        $products=$this->_productCollectionCat($category);
+		//Zend_Debug::dump($products->getAllIds());
+?>
+
+<?php if(!($products->getSize())): ?>
+<?php else: ?>
+    
+
+    <?php // Grid Mode ?>
+    <?php $_columnCount =Mage::helper("showroom")->getShowroomConfig('number_column_product');// $this->getColumnCount(); ?>
+    <?php $i=$this->get(); foreach ($products as $_product): ?>
+        <?php if ($i++%$_columnCount==0): ?>	
+        <ul class="products-grid">
+        <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+                <div class="image">
+                    <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize($arrsize[0],$arrsize[1]); ?>" width="<?php echo $arrsize[0] ?>" height="<?php echo $arrsize[1] ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                </div>
+                <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+                <?php echo $this->getPriceHtml($_product, true) ?>
+            </li>
+        <?php if ($i%$_columnCount==0): ?>
+        </ul>
+        <?php endif ?>
+        <?php $this->set($i);endforeach ?>
+<?php endif; ?>
+<?php } ?>
+</div>
+<?php
+    if($this->get()%$_columnCount!=0) echo '</ul>';
+?>
+</div>
+
+
+
+<script type="text/javascript">
+//<![CDATA[
+function follow(showroom){
+    <?php
+        if(!$customer_id){
+            $authUrl = $this->helper('core/url')->getCurrentUrl();
+            Mage::getSingleton('customer/session')->setBeforeAuthUrl($authUrl);
+        }
+    ?>
+    var customer_id='<?php echo $customer_id; ?>';
+    if (!customer_id){
+        url='<?php echo $this->getUrl("customer/account/login") ?>';
+        window.location.href = url;
+        return;
+    }
+    $('ajaxunfollow_'+showroom).show();
+    $('ajaxfollow_'+showroom).hide();
+    var url = '<?php echo $this->getUrl("showroom/follow/follow")?>?showroom='+showroom;
+        var request = new Ajax.Request(url,{
+                onComplete: function(response){
+                    if(response.status == 200){
+                        $('follows_'+showroom).innerHTML=response.responseText;
+                    }
+                }
+            }
+        );
+}
+function unfollow(showroom){
+    $('ajaxunfollow_'+showroom).hide();
+    $('ajaxfollow_'+showroom).show();
+    var url = '<?php echo $this->getUrl("showroom/follow/unfollow")?>?showroom='+showroom;
+        var request = new Ajax.Request(url,{
+                onComplete: function(response){
+                    if(response.status == 200){
+                        $('follows_'+showroom).innerHTML=response.responseText;
+                    }
+                }
+            }
+        );
+}
+//]]>
+</script>
+
+    
+<?php 
+        if($profile->getImage()){
+            $url_image=Mage::getBaseUrl('media').$profile->getImage();
+        }else{
+            $url_image=Mage::getBaseUrl('media').'showroom/avatar.jpg';
+        }
+        $name='My Showroom';
+        if($id)
+            $name=$profile->getName()." \'s showroom";
+?>
+   
+    <script> 
+    //<![CDATA[
+    FB.init({appId: '<?php echo Mage::helper("showroom/facebook")->getAppId() ?>', status: true, cookie: true});
+
+    function postToFeed() {
+
+        // calling the API ...
+        var obj = {
+          method: 'feed',
+          link: '<?php echo Mage::helper("core/url")->getCurrentUrl()."?___store=".Mage::app()->getStore()->getCode() ?>',
+          picture: '<?php echo $url_image ?>',
+          name: '<?php echo $this->__($name)?>',
+          caption: '',
+          description: '<?php echo Mage::helper("showroom")->preProcessStr(Mage::helper("showroom")->getReferConfig("description"))?>'
+        };
+
+        function callback(response) {
+        if(response)
+            $('msg').innerHTML = '<?php echo $this->__("Thank you for sharing ".$name." on facebook")?>';
+        }
+
+        FB.ui(obj, callback);
+    }
+    //]]>
+    </script>
+

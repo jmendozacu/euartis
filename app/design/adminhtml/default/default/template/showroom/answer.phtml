@@ -1,0 +1,184 @@
+<?php 
+$dataObj = new Varien_Object(array(
+	'answer_id' => '',
+	'title_in_store'	=> '',
+  ));
+$answer_id 	= $this->getElement()->getId() ;
+$inStore = $this->getStoreId();
+$defaultLabel = Mage::helper('showroom')->__('Use Default');
+$defaultTitle = Mage::helper('showroom')->__('-- Please Select --');
+$scopeLabel = Mage::helper('showroom')->__('STORE VIEW');
+?>
+<?php //Zend_Debug::dump(get_class_methods($this->getElement())) ?>
+<?php $_htmlId      = $this->getElement()->getHtmlId() ?>
+<?php $_htmlClass   = $this->getElement()->getClass() ?>
+<?php $_htmlName    = $this->getElement()->getName() ?>
+<?php $_readonly    = $this->getElement()->getReadonly() ?>
+<?php //$_showWebsite = $this->isShowWebsiteColumn(); ?>
+<?php //$_editWebsite = $this->isAllowChangeWebsite(); ?>
+<?php $_priceValueValidation = $this->getPriceValidation('validate-greater-than-zero'); ?>
+<?php 
+	$block = $this->getLayout()->createBlock('showroom/adminhtml_answer_conditions');
+?>
+
+<?php $statusList = Mage::getSingleton('showroom/status')->getAnswerStatusList(); ?>
+	<td class="grid" style="width:890px">
+    <table cellspacing="0" class="data border" id="answer_table">
+        <col width="300" />
+        <col width="300" />
+		<col width="50" />
+        <col width="50" />
+        <!--col width="100" /-->
+		<col width="1" />
+        <thead>
+            <tr class="headings">
+                <th ><?php echo Mage::helper('showroom')->__('Title') ?></th>
+                <th><?php echo Mage::helper('showroom')->__('Image') ?></th>
+                <th><?php echo Mage::helper('showroom')->__('Sort') ?></th>
+                <th><?php echo Mage::helper('showroom')->__('Status') ?></th>
+				<!--th><?php echo Mage::helper('showroom')->__('Product Coditions') ?></th-->
+                <th class="last"><?php echo Mage::helper('showroom')->__('Action') ?></th>
+            </tr>
+        </thead>
+        <tbody id="<?php echo $_htmlId ?>_container"></tbody>
+        <tfoot>
+            <tr>
+                <td style="display:none"></td>
+                <td colspan="6" class="a-right"><?php echo $this->getAddButtonHtml() ?></td>
+            </tr>
+        </tfoot>
+    </table>
+	</td>
+	<?php $src = str_replace('\\','\\\\',Mage::getBaseDir("media").DS."showroom".DS)?>
+<script type="text/javascript">
+//<![CDATA[
+var src = '{{image}}';
+var tierPriceRowTemplate = '<tr>'
+	+ '<td style="display:none">'
+	+ '<input type="hidden" value="{{id}}" class="<?php echo $_htmlClass ?>" name="<?php echo $_htmlName ?>[{{index}}][id]" id="answer_render_row_{{index}}_id" />'
+	+ '</td>'
+    + '<td>'
+    + '<input  <?php if($inStore && !$data['title_in_store']): ?>disabled="disabled"<?php endif ?> type="text" class="<?php echo $_htmlClass ?> required-entry" name="<?php echo $_htmlName ?>[{{index}}][title]" id="answer_render_row_{{index}}_title" />'
+	+ '<?php if($inStore): ?><br/>'
+	+ '<input name="<?php echo $_htmlName ?>[{{index}}][title_default]" id="answer_render_row_{{index}}_title_default" type="checkbox" value="1" class="checkbox config-inherit" <?php if(!$data['title_in_store']) echo 'checked="checked"' ?> onclick="toggleValueElements(this, this.parentNode)" />'
+	+ '<label for="title_default" class="inherit" title="<?php echo $defaultTitle ?>" ><?php echo $defaultLabel ?></label><span class="scope-label">[<?php echo $scopeLabel ?>]</span><?php else:?><span class="scope-label">[<?php echo $scopeLabel ?>]</span><?php endif ?>'
+    + '</td>'
+    + '<td><img style="float:left;padding-right:5px" width="30" height="30" src={{image}} /><input style="float:left" type="file" class="<?php echo $_htmlClass ?> image" name="<?php echo $_htmlName ?>[{{index}}][image]" id="answer_render_row_{{index}}_image" />'
+    + '</td>'
+    + '<td class="nobr"><input class="<?php echo $_htmlClass ?> sort required-entry" type="text" name="<?php echo $_htmlName ?>[{{index}}][sort]" value="{{sort}}" id="answer_render_row_{{index}}_sort" />'
+    + '</td>'
+	+ '<td><select class="<?php echo $_htmlClass ?> status required-entry" type="text" name="<?php echo $_htmlName ?>[{{index}}][status]" value="{{status}}" id="answer_render_row_{{index}}_status" />'
+	<?php foreach($statusList as $value=>$status): ?>
+	+ '<option value="<?php echo $value ?>"><?php echo $this->jsQuoteEscape($this->htmlEscape($status)) ?></option>'
+	<?php endforeach;?>
+	+ '</select></td>'
+    + ''
+    + '<td class="last"><input type="hidden" name="<?php echo $_htmlName ?>[{{index}}][delete]" class="delete" value="" id="answer_render_row_{{index}}_delete" />'
+    + '<button title="<?php echo Mage::helper("catalog")->__("Delete Answer") ?>" type="button" class="scalable delete icon-btn delete-product-option" id="answer_render_row_{{index}}_delete_button" onclick="return tierPriceControl.deleteItem(event);">'
+    + '<span><?php echo Mage::helper("catalog")->__("Delete") ?></span></button></td>'
+    + '</tr><tr>'
+	+ '<td colspan="6" id="conditions-{{id}}">'
+	+ '</td>'
+	+ '</tr>'
+	;
+
+var tierPriceControl = {
+    template: new Template(tierPriceRowTemplate, new RegExp('(^|.|\\r|\\n)({{\\s*(\\w+)\\s*}})', "")),
+    itemsCount: 0,
+    addItem : function () {
+        <?php if ($_readonly): ?>
+        if (arguments.length < 4) {
+            return;
+        }
+        <?php endif; ?>
+        var data = {
+			id: '',
+            title: '',
+            image: '',
+            sort: '',
+            status: '<?php $this->getDefaultStatus();?>',
+            readOnly: false,
+            index: this.itemsCount++,
+			default_title: '',
+			default_image: '',
+			default_sort: '',
+			default_status: '',
+        };
+
+        if(arguments.length >= 5) {
+			data.id = arguments[0];
+            data.title = arguments[1];
+            data.image      = arguments[2];
+            data.sort        = arguments[3];
+            data.status      = arguments[4];
+			data.readOnly = arguments[5];
+        }
+
+        Element.insert($('<?php echo $_htmlId ?>_container'), {
+            bottom : this.template.evaluate(data)
+        });
+		$('answer_render_row_' + data.index + '_id').value = data.id;
+        $('answer_render_row_' + data.index + '_image').value = data.image;
+        $('answer_render_row_' + data.index + '_title').value    = data.title;
+		
+
+        if (data.readOnly == '1') {
+            ['id','title', 'image', 'sort', 'status', 'delete'].each(function(idx){
+                $('answer_render_row_'+data.index+'_'+idx).disabled = true;
+            });
+            $('answer_render_row_'+data.index+'_delete_button').hide();
+        }
+
+        <?php if ($_readonly): ?>
+        $('<?php echo $_htmlId ?>_container').select('input', 'select').each(this.disableElement);
+        $('<?php echo $_htmlId ?>_container').up('table').select('button').each(this.disableElement);
+        <?php else: ?>
+        $('<?php echo $_htmlId ?>_container').select('input', 'select').each(function(el){ Event.observe(el, 'change', el.setHasChanges.bind(el)); });
+        <?php endif; ?>
+    },
+    disableElement: function(el) {
+        el.disabled = true;
+        el.addClassName('disabled');
+    },
+    deleteItem: function(event) {
+        var tr = Event.findElement(event, 'tr');
+		var nexttr = tr.nextSibling;
+        if (tr) {
+            Element.select(tr, '.delete').each(function(elem){elem.value='1'});
+            Element.select(tr, ['input', 'select']).each(function(elem){elem.hide()});
+            Element.hide(tr);
+            Element.addClassName(tr, 'no-display template');
+        }
+		if(nexttr){
+			Element.hide(nexttr);
+		}
+        return false;
+    }
+};
+<!--td><a href="#" onclick="conditionPopup({{id}})" class="<?php echo $_htmlClass ?> " href="?id=1" name="<?php echo $_htmlName ?>[{{index}}][codition]" value="{{id}}" id="answer_render_row_{{index}}_condition" >Edit</a></td-->
+<?php foreach ($this->getValues() as $_item): ?>
+<?php 
+	$answer = $this->getAnswer($_item['answer_id']);
+	$data = $answer->getData();
+	if (isset($data)) $dataObj->addData($data);
+		$data = $dataObj->getData();
+?>
+<?php $block->setAnswerId($_item['answer_id']);?>
+<?php $name = $_item['image'] ? $_item['image'] : 'no-img.gif'; ?>
+<?php $src = str_replace('\\','\\\\',Mage::getBaseUrl('media').DS.'showroom'.DS.$name);?>
+tierPriceControl.addItem('<?php echo $_item['answer_id'] ?>','<?php echo $_item['title'] ?>', '<?php echo $src ?>', '<?php echo $_item['sort']*1 ?>', '<?php echo $_item['status'] ?>', <?php echo (int)!empty($_item['readonly'])?>);
+$('conditions-<?php echo $_item['answer_id']?>').innerHTML = <?php echo json_encode($block->toHtml())?>;
+var showroom<?php echo $_item['answer_id'] ?>_conditions_fieldset = new VarienRulesForm('showroom<?php echo $_item['answer_id'] ?>_conditions_fieldset', '<?php echo $this->getUrl('showroom/adminhtml_answer/newConditionHtml/form/showroom'.$_item['answer_id'].'_conditions_fieldset',array('prefix'=>'answer'.$_item['answer_id'])) ?>');
+
+<?php endforeach; ?>
+<?php if ($_readonly): ?>
+$('<?php echo $_htmlId ?>_container').up('table').select('button')
+    .each(tierPriceControl.disableElement);
+<?php endif; ?>
+
+function conditionPopup(id){
+	var url = '<?php echo $this->getUrl('showroom/adminhtml_answer')?>?answer_id='+id;
+	window.open( url,"myWindow","status = 1, height = 600, width = 800, resizable = 0");
+}
+//]]>
+</script>

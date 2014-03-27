@@ -1,0 +1,114 @@
+<?php //$this->setAnswerId(6) ?>
+<?php $answer = $this->getAnswer()?>
+<?php $answer_id = $this->getAnswerId() ?>
+<?php 
+	$data = $answer->getData();
+	//Zend_Debug::dump($data);
+	$dataObj = new Varien_Object(array(
+      	'question_id' => '',
+      	'title_in_store'	=> '',
+      	'status_in_store'	=> '',
+		'type_in_store'		=> '',
+		'sort_in_store'		=> ''
+	  ));
+	  if (isset($data)) $dataObj->addData($data);
+			$data = $dataObj->getData();
+	$inStore = $this->getRequest()->getParam('store');
+	$defaultLabel = Mage::helper('showroom')->__('Use Default');
+	$defaultTitle = Mage::helper('showroom')->__('-- Please Select --');
+	$scopeLabel = Mage::helper('showroom')->__('STORE VIEW');
+?>
+<?php if(!$answer_id) $answer_id = $this->getPrefix();?>
+<div class="option-box" id="answer_<?php echo $answer_id?>">
+<table id="answer_table_<?php echo $answer_id?>" class="option-header" cellpadding="0" cellspacing="0">
+<input type="hidden" id="answer_render_<?php echo $answer_id?>_delete" name="answer[render][<?php echo $answer_id?>][delete]" value="">
+<input type="hidden" id="answer_render_<?php echo $answer_id?>_id" name="answer[render][<?php echo $answer_id?>][id]" value="<?php echo $answer_id?>">
+	<thead>
+		<tr>
+			<th style="width:30%" class="opt-title"><?php echo $this->__('Answer No #'.$this->getIndex())?></th>
+		</tr>
+		<tr>			
+			<th style="width:30%" class="opt-type"><?php echo $this->__('Image') ?></th>
+			<th style="width:30%" class="opt-title"><?php echo $this->__('Label')?></th>
+			<th class="opt-order" style="width:15%"><?php echo $this->__('Sort') ?></th>
+			<th class="opt-req" style="width:15%"><?php echo $this->__('Status') ?></th>			
+			<th class="a-right">
+				<button id="btn_delete_<?php echo $answer->getId()?>" type="button" class="scalable delete delete-product-option " onclick="deleteAnswer('<?php echo $answer_id?>')" style="">
+					<span><?php echo $this->__('Delete Answer')?></span>
+				</button>
+			</th>
+		</tr>
+	</thead>
+<tbody>
+	<tr>		
+		<td>
+			<?php if($answer->getImage()):?><img style="float:left" width="35" height="35" src="<?php echo Mage::getBaseUrl('media').'/showroom/question/'.$answer->getQuestionId().'/'.$answer->getImage() ?>" /> <?php endif ?>
+			<div style="height:40px">	
+			<input <?php if(!$answer->getImage()):?>class="required-entry"<?php endif ?> <?php if($inStore && !$data['image_in_store']):?> disabled <?php endif ?> style="float:left;padding-left:5px;width:80%" type="file" name="answer[render][<?php echo $answer_id ?>][image]" id="answer_render_<?php echo $answer_id ?>_image" /><br/>
+			</div>
+			<?php if($inStore): ?> 
+				<input id="answer_render_<?php echo $answer_id ?>_image_default" name="answer[render][<?php echo $answer_id ?>][image_default]" type="checkbox" value="1" class="checkbox config-inherit" <?php if(!$data['image_in_store']): ?> checked="checked" <?php endif?> onclick="toggleValueElements(this, Element.previous(this))" />
+				<label for="answer_render_<?php echo $answer_id ?>_image_default" class="inherit" title="<?php echo $defaultTitle ?>"><?php echo $defaultLabel ?></label><br/>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php else: ?>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php endif ?>
+		</td>
+		<td>
+			<div style="height:40px">
+				<input type="text" <?php if($inStore && !$data['title_in_store']):?> disabled <?php endif ?> class="input-text" id="answer_render_<?php echo $answer_id ?>_title" name="answer[render][<?php echo $answer_id ?>][title]" value="<?php echo $answer->getTitle() ?>"><br/>
+			</div>
+			<?php if($inStore): ?> 
+				<input id="answer_render_<?php echo $answer_id ?>_title_default" name="answer[render][<?php echo $answer_id ?>][title_default]" type="checkbox" value="1" class="checkbox config-inherit" <?php if(!$data['title_in_store']): ?> checked="checked" <?php endif?> onclick="toggleValueElements(this, Element.previous(this))" />
+				<label for="answer_render_<?php echo $answer_id ?>_title_default" class="inherit" title="<?php echo $defaultTitle ?>"><?php echo $defaultLabel ?></label><br/>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php else: ?>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php endif ?>
+		</td>
+		<td class="opt-req">
+			<div style="height:40px">
+			<input <?php if($inStore && !$data['sort_in_store']):?> disabled <?php endif ?> type="text" class="validate-zero-or-greater input-text" name="answer[render][<?php echo $answer_id ?>][sort]" id="answer_render_<?php echo $answer_id ?>_sort" value="<?php echo $answer->getSort() ?>"><br/>
+			</div>
+			<?php if($inStore): ?> 
+				<input id="answer_render_<?php echo $answer_id ?>_sort_default" name="answer[render][<?php echo $answer_id ?>][sort_default]" type="checkbox" value="1" class="checkbox config-inherit" <?php if(!$data['sort_in_store']): ?> checked="checked" <?php endif?> onclick="toggleValueElements(this, Element.previous(this))" />
+				<label for="answer_render_<?php echo $answer_id ?>_sort_default" class="inherit" title="<?php echo $defaultTitle ?>"><?php echo $defaultLabel ?></label><br/>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php else: ?>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php endif ?>
+		</td>
+		<td>
+			<div style="height:40px">
+			<select <?php if($inStore && !$data['status_in_store']):?> disabled <?php endif ?> name="answer[render][<?php echo $answer_id ?>][status]" value="<?php echo $answer->getStatus()?>" id="answer_render_<?php echo $answer_id ?>_status" class="select" title="">
+				<?php foreach(Mage::helper('showroom')->getAnswerStatusOptionArray() as $value=>$status):?>
+					<option value="<?php echo $value ?>" <?php if($answer->getStatus()== $value):?>selected="selected" <?php endif ?> ><?php echo $status ?></option>
+				<?php endforeach ?>
+			</select><br/>
+			</div>
+			<?php if($inStore): ?> 
+				<input id="answer_render_<?php echo $answer_id ?>_status_default" name="answer[render][<?php echo $answer_id ?>][status_default]" type="checkbox" value="1" class="checkbox config-inherit" <?php if(!$data['status_in_store']): ?> checked="checked" <?php endif?> onclick="toggleValueElements(this, Element.previous(this))" />
+				<label for="answer_render_<?php echo $answer_id ?>_status_default" class="inherit" title="<?php echo $defaultTitle ?>"><?php echo $defaultLabel ?></label><br/>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php else: ?>
+				<span><?php echo $scopeLabel ?> </span>
+			<?php endif ?>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="5">
+			<?php $conditionsBlock = $this->getLayout()->createBlock('showroom/adminhtml_answer_conditions');?>
+			<?php $conditionsBlock->setAnswerId($answer_id); ?>
+			<?php echo $conditionsBlock ->toHtml() ?>
+		</td>
+	</tr>
+</tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+	$('helper-wrap').style.display='block';
+    var wrapTip = new Tooltip('help-img-<?php echo $answer_id?>', 'helper_information');
+</script>
+

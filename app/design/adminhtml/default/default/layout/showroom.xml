@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category 	Magestore
+ * @package 	Magestore_Showroom
+ * @copyright 	Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license 	http://www.magestore.com/license-agreement.html
+ */
+-->
+<layout version="0.1.0">
+	<default>
+		<reference name="head">
+			<action method="addJs">
+				<script>magestore/showroom/tooltip.js</script>
+			</action>
+		</reference>
+	</default>
+	<showroomadmin_adminhtml_showroom_index>
+		<reference name="content">
+			<block type="showroom/adminhtml_showroom" name="showroom" />
+		</reference>
+	</showroomadmin_adminhtml_showroom_index>
+	<showroomadmin_adminhtml_profile_index>
+		<reference name="content">
+			<block type="showroom/adminhtml_profile" name="showroom" />
+		</reference>
+	</showroomadmin_adminhtml_profile_index>
+	<showroomadmin_adminhtml_question_edit>
+		<reference name="head">
+			<action method="addJs">
+				<script>magestore/showroom/tooltip.js</script>
+			</action>
+		</reference>
+    	<reference name="left">
+			<block type="adminhtml/store_switcher" name="store_switcher" before="-" />
+		</reference>
+    </showroomadmin_adminhtml_question_edit>
+	<showroomadmin_adminhtml_question_index>
+		<reference name="head">
+			<action method="addJs">
+				<script>magestore/showroom/tooltip.js</script>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
+				<action method="setUseConfirm"><params>0</params></action>
+			</block>
+			<block type="showroom/adminhtml_question" name="question" />
+		</reference>
+	</showroomadmin_adminhtml_question_index>
+	<showroomadmin_adminhtml_answer_index>
+		<reference name="content">
+			<block type="showroom/adminhtml_question_edit_tab_answers_products" name="answer" />
+		</reference>
+	</showroomadmin_adminhtml_answer_index>
+
+	<showroomadmin_adminhtml_showroom_preferredproductsgrid>
+	    <block type="core/text_list" name="root">
+	        <block type="showroom/adminhtml_showroom_edit_tab_preferredproducts" name="showroom.edit.tab.preferredproducts"/>
+	    </block>	
+	</showroomadmin_adminhtml_showroom_preferredproductsgrid>
+	<showroomadmin_adminhtml_showroom_listfollowgrid>
+	    <block type="core/text_list" name="root">
+	        <block type="showroom/adminhtml_showroom_edit_tab_followers" name="showroom.edit.tab.followers"/>
+	    </block>	
+	</showroomadmin_adminhtml_showroom_listfollowgrid>
+	<showroomadmin_adminhtml_showroom_stylegrid>
+	    <block type="core/text_list" name="root">
+	        <block type="showroom/adminhtml_showroom_edit_tab_styleform" name="showroom.edit.tab.styleform"/>
+	    </block>	
+	</showroomadmin_adminhtml_showroom_stylegrid>
+	<!--showroomadmin_adminhtml_profile_showroomsgrid>
+		<block type="core/text_list" name="root">
+			<block type="showroom/adminhtml_profile_edit_tab_showrooms" name="profile.edit.tab.showrooms" />
+		</reference>
+	</showroomadmin_adminhtml_profile_showroomsgrid-->
+	
+	<showroomadmin_adminhtml_answer_index>
+		<reference name="content">
+			<block type="showroom/adminhtml_answer_conditions" name="conditions"/>
+		</reference>
+	</showroomadmin_adminhtml_answer_index>
+	<adminhtml_system_config_edit_section_showroom>
+		<reference name="head">
+			<action method="addJs">
+				<script>magestore/showroom/tooltip.js</script>
+			</action>
+		</reference>
+	</adminhtml_system_config_edit_section_showroom>
+</layout>

@@ -1,0 +1,112 @@
+<?php $cssfile=$this->getSkinUrl(Mage::helper('showroom')->getSwitchedSkinFile());?>
+<link rel="stylesheet" type="text/css" href='<?php echo $cssfile;?>' media="all" />
+<?php $showroom = $this->getShowroom() ?>
+<?php $qp = $this->getRequest()->getParam('qp',1); ?>
+<?php $number_per_page = Mage::helper('showroom')->getShowroomConfig('question_per_page'); ?>
+<?php $number_page = ceil(count($this->getQuestionCollection())/$number_per_page) ?>
+<?php $complete = floatval(100 * $qp) / floatval($number_page) ?>
+<?php //Zend_Debug::dump($complete) ?>
+<?php $questionCollection = $this->getQuestionCollection()->setPageSize($number_per_page)->setCurPage($qp); ?>
+<?php if(count($this->getQuestionCollection()) > floatval($qp)*floatval($number_per_page)) $p = $qp+1;?>
+<?php $storeId = Mage::app()->getStore()->getId() ?>
+<div id="showroom-question">
+<div class="page-title">
+	<h1><?php echo $this->__('Style Profile')?></h1>
+	<h2><?php echo $this->__('Take the Quiz and Discover Your Style Profile in Just a Few Minutes')?></h2>
+	<?php if($showroom && $showroom->getId()):?><button class="button cancel" onclick="window.location='<?php echo $this->getUrl('showroom/index/overview')?>'"><span><span><?php echo $this->__('Cancel')?></span></span></button><?php endif ?>
+</div>
+<form id="showroom-question-form" action="<?php echo $this->getUrl('showroom/create/pre_save_survey',array('qp'=>$p))?>" method="POST" >
+	<div class="showroom-question-list">
+		<?php $i=1+($qp-1)*$number_per_page ?>
+		
+		<?php foreach($questionCollection as $question): ?>
+		<?php $answerCollection = $this->getAnswerCollectionByQuestionId($question->getId());?>
+		<?php $answerCollection->setStoreId($storeId);?>
+		<div class="showroom-question">
+			<div class="showroom-question-title">
+				<h1><strong><?php echo $i ?></strong><?php echo $question->getTitle() ?>&nbsp;<?php if($question->getType()==2): ?><span style="color:red">*</span><?php endif ?></h1>
+			</div>
+			<div class="showroom-question-answer">
+				<input class="input-text <?php if($question->getType()==2): ?>required-entry <?php endif ?>" type="hidden" name="showroom[question][<?php echo $question->getId()?>]" value="<?php if($showroom) echo $showroom->getAnswerIdByQuestion($question->getId()); ?>" id="showroom_question_<?php echo $question->getId()?>_answer" />
+				<ul class="showroom-question-ul">
+					<?php $j=1 ?>
+					<?php foreach($answerCollection as $answer): ?>
+					<?php
+						$imageresize=Mage::helper('showroom/image')->init($answer,'showroom'.DS.'question'.DS.$answer->getQuestionId())->resize(135); 
+					?>
+						<li class="showroom-answer showroom-answer-<?php echo $question->getId()?> <?php if($j%3 == 0):?>last<?php endif ?> <?php if($showroom && ($showroom->getId()) && ($showroom->getAnswerIdByQuestion($question->getId()) == $answer->getId())):?>active<?php endif ?>" id="showroom-answer-<?php echo $answer->getId() ?>">
+							<div class="showroom-question-image" style="width: 135px;
+	height: 135px;
+	overflow: hidden;">
+								<a href="javascript:selectAnswer('<?php echo $question->getId() ?>','<?php echo $answer->getId()?>')"><img alt="<?php echo $answer->getTitle()?>" src="<?php echo $imageresize ?>" title="<?php echo $answer->getTitle()?>" />
+								</a>
+							</div>
+						</li>
+						<?php $j++;?>
+					<?php endforeach ?>
+				</ul>
+			</div>
+		</div>
+		<?php $i++; ?>
+		<?php endforeach ?>
+		<div class="fullbar" style="height:16px;position:relative;">					
+			<div class="bar" style="position:absolute;top:0;left:0;height:16px;width:100%;">
+			<div class="bar-left" style="float:left;width:5px;height:16px;">&nbsp;</div>
+			<div class="bar-middle" style="float:left;width:<?php echo $complete-2 ; ?>%;">&nbsp;</div>
+			<div class="bar-right" style="float:left;width:5px;height:16px;">&nbsp;</div>
+			</div>
+			<label><?php echo $this->__('QUIZ PROGRESS') ?></label>		
+			</div>
+		</div>
+		<div class="showroom-submit" id="showroom-button-continue">
+			<!--input type="submit" onclick="$('showroom-question-form').submit()" class="button" type="button" ><span><span><?php echo $this->__('Continue') ?></span></span></button--> 
+			<button onclick="return checkRequired();$('showroom-question-form').submit()" type="submit" class="button validation-passed" title="Continue" name="continue">
+				<span><span><?php echo $this->__('Continue') ?></span></span>
+			</button>
+		</div>
+	</div>
+</form>
+</div>
+<script type="text/javascript">
+    //<![CDATA[
+        var dataForm = new VarienForm('showroom-question-form', true);
+    //]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+	function selectAnswer(question_id,answer_id){
+		var input = $('showroom_question_'+question_id+'_answer');
+		if(input){
+			var others = $$('li.showroom-answer-'+question_id);
+			if(others.length){
+				input.value = answer_id;
+				for(var j=0;j<others.length;j++){
+					var part = others[j];
+					if(part.id != 'showroom-answer-'+answer_id){
+						if(part.hasClassName('active')){
+							part.removeClassName('active');
+						}
+					}else{
+						if(part.hasClassName('active')){			
+							part.removeClassName('active');
+							input.value = '';
+						}else{
+							part.addClassName('active');
+						}
+					}
+					
+					//part.style.border = 'none';
+				}
+			}
+		}
+	}
+	
+	function checkRequired(){
+		var validated = dataForm.validator.validate();
+		if(validated){
+			return true;
+		}
+		return false;
+	}
+//]]>
+</script>

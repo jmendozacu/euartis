@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category 	Magestore
+ * @package 	Magestore_Showroom
+ * @copyright 	Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license 	http://www.magestore.com/license-agreement.html
+ */
+-->
+<layout version="0.1.0">
+	<default>
+		<reference name="top.links">
+            <action method="addLink" translate="label title" module="showroom"><label>Showroom</label><url helper="showroom/getShowroomUrl"/><title>show room</title><prepare/><urlParams/><position>10</position></action>
+        </reference>
+		<reference name="head">
+    		<action method="addCss"><styleSheet>css/magestore/showroom.css</styleSheet></action>
+    	</reference>
+		<!--reference name="before_body_end">
+			<block type="showroom/popup" name="showroom_popup" template="showroom/popup.phtml" />
+		</reference-->
+	</default>
+	<customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="showroom" ><name>showroom</name><path>showroom/index/overview</path><label>My Showroom</label></action>
+        </reference>
+	</customer_account>
+	<showroom_default>
+		<reference name="left">
+			<block type="showroom/menu" name="menu" before="-" template="showroom/menu.phtml"/>
+			<block type="catalog/layer_view" name="catalog.leftnav" after="menu" template="showroom/view.phtml"/>
+			<block type="showroom/menu" name="menu_stylist" after="catalog.leftnav" template="showroom/menu_stylist.phtml"/>
+			<block type="showroom/refer" name="friends_box" after="menu_stylist" template="showroom/friends_box.phtml"/>
+		</reference>
+	</showroom_default>
+	<showroom_index_index>
+		<!--reference name="head">
+			<action method="addJs"><script>magestore/showroom.js</script></action>
+		</reference-->
+		<update handle="showroom_default" />
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="showroom/showroom" name="showroom" template="showroom/showroom.phtml">
+				<block type="catalog/product_list_toolbar" name="product_list_toolbar" template="catalog/product/list/toolbar.phtml">
+                    <block type="page/html_pager" name="product_list_toolbar_pager"/>
+                </block>
+                <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>				
+            </block>
+        </reference>
+	</showroom_index_index>
+
+	<showroom_index_overview>
+		<update handle="showroom_default" />
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="showroom/overview" name="showroom" template="showroom/overview.phtml"/>
+        </reference>
+	</showroom_index_overview>
+
+	<showroom_setting_index>
+		<update handle="showroom_default" />
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="showroom/setting" name="showroom_setting" template="showroom/setting.phtml" />
+		</reference>
+	</showroom_setting_index>
+	<showroom_listing_index>
+		<update handle="showroom_default" />
+  		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+  		<reference name="content">
+   			<block type="showroom/showroomlisting" name="showroom_listing" template="showroom/showroomlisting.phtml">
+   				<block type="showroom/stylist" name="showroom_stylist" template="showroom/listing.phtml"/>
+   				<block type="showroom/showroomlisting" name="showroom_showroomlisting" template="showroom/listing.phtml"/>
+   			</block>
+  		</reference>
+ 	</showroom_listing_index>
+	<catalog_product_view>
+	    <reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+		<reference name="product.info.extrahint">
+			<block type="showroom/setting" name="productshowroom" as="other" template="showroom/addtoshowroom.phtml"  before="-">
+			</block>
+		</reference>
+	</catalog_product_view>
+	
+	
+	<showroom_create_index>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+		<reference name="content">
+			<block type="showroom/survey" name="showroom_survey" />
+		</reference>
+	</showroom_create_index>
+	
+	<showroom_create_sign_up>
+        <reference name="content">
+			<block type="showroom/form" name="showroom_form" template="showroom/form.phtml" >
+				<block type="customer/form_register" name="customer_form_register" template="customer/form/register.phtml">
+                <block type="page/html_wrapper" name="customer.form.register.fields.before" as="form_fields_before" translate="label">
+                    <label>Form Fields Before</label>
+                </block>
+            </block>
+			</block>            
+        </reference>
+	</showroom_create_sign_up>
+	
+	<showroom_edit_index>
+		<update handle="showroom_default" />
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="showroom/edit" name="showroom_edit" template="showroom/edit.phtml" />
+		</reference>
+	</showroom_edit_index>
+	
+	<showroom_index_friends>
+		<update handle="showroom_default" />
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="showroom/friends" name="showroom_friends" />
+		</reference>
+	</showroom_index_friends>
+</layout>

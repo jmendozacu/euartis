@@ -1,0 +1,35 @@
+<?php $_productCollection = $this->getLoadedProductCollection(); ?>
+<?php if ($_productCollection->count()): $_helper = $this->helper('catalog/output'); ?>
+<ul class="img-list">
+    <?php $index = 0; foreach ($_productCollection as $_product): ?>
+    <li>
+        <a href="<?php echo $_product->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(300); ?>" alt="<?php echo $this->htmlEscape($this->getImageLabel($_product, 'small_image')) ?>" width="300" height="300" /></a>
+        <div class="img-overlay">
+            <div class="img-overlay-area">
+                <a href="<?php echo $_product->getProductUrl() ?>"><strong class="heading"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></strong></a>
+                <div class="heading-holder">
+                    <strong class="price"><?php echo $this->getPriceHtml($_product) ?></strong>
+                    <span class="onsale"><?php echo $this->__('on sale') ?></span>
+                </div>
+                <div class="overlay-txt">
+                	<?php if ($_product->getShortDescription()): ?>
+                    <p><?php echo $_product->getShortDescription() ?></p>
+                    <?php endif ?>
+                    <div class="holder">
+                        <a class="quickview" rel="nofollow" href="<?php echo Mage::getBaseUrl(), 'catalog/ajax_product/view/id/', $_product->getId() ?>"><?php echo $this->__('Quickview') ?></a>
+                        <?php if ($_product->isSaleable()): ?>
+                        	<?php if ($_product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE): ?>
+                        	<a class="add-to-cart simple-product" rel="nofollow" href="<?php echo $this->helper('checkout/cart')->getAddUrl($_product, array()) ?>"><?php echo $this->__('Add to cart') ?></a>
+                        	<?php else: ?>
+                        	<a class="add-to-cart" rel="nofollow" href="<?php echo Mage::getBaseUrl(), 'catalog/ajax_product/view/id/', $_product->getId() ?>"><?php echo $this->__('Add to cart') ?></a>
+                        	<?php endif ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+    <?php if (++$index == 3): break; endif ?>
+    <?php endforeach ?>
+</ul>
+<?php endif ?>

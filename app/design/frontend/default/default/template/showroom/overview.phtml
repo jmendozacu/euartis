@@ -1,0 +1,4 @@
+<?php $switched_template = Mage::helper('showroom')->getSwitchedTemplate(__FILE__) ?>
+<?php $cssfile=$this->getSkinUrl(Mage::helper('showroom')->getSwitchedSkinFile());?>
+<link rel="stylesheet" type="text/css" href='<?php echo $cssfile;?>' media="all" />
+<?php include ($switched_template) ?>

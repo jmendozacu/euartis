@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category 	Magestore
+ * @package 	Magestore_Showroom
+ * @copyright 	Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license 	http://www.magestore.com/license-agreement.html
+ */
+-->
+<config>
+	<menu>
+		<showroom module="showroom" translate="title">
+			<title>Showroom</title>
+			<sort_order>71</sort_order>               
+			<children>
+				<question module="showroom" translate="title">
+					<title>Manage Question</title>
+					<sort_order>0</sort_order>
+					<action>showroomadmin/adminhtml_question</action>
+				</question>
+				<showroom module="showroom" translate="title">
+					<title>Manage Showroom</title>
+					<sort_order>20</sort_order>
+					<action>showroomadmin/adminhtml_showroom</action>
+				</showroom>
+				<profile module="showroom" translate="title">
+					<title>Manage Profile</title>
+					<sort_order>10</sort_order>
+					<action>showroomadmin/adminhtml_profile</action>
+				</profile>
+				<settings module="showroom" translate="title">
+					<title>Settings</title>
+					<sort_order>1000</sort_order>
+					<action>adminhtml/system_config/edit/section/showroom</action>
+				</settings>
+			</children>
+		</showroom>
+	</menu>
+	<acl>
+		<resources>
+			<all>
+				<title>Allow Everything</title>
+			</all>
+			<admin>
+				<children>
+					<system>
+						<children>
+							<config>
+								<children>
+									<showroom module="showroom" translate="title">
+										<title>Showroom</title>
+										<sort_order>71</sort_order>									
+									</showroom>								
+								</children>
+							</config>
+						</children>
+					</system>
+					<showroom module="showroom" translate="title">
+						<title>Showroom</title>
+						<sort_order>71</sort_order>               
+						<children>
+							<question module="showroom" translate="title">
+								<title>Manage Question</title>
+								<sort_order>0</sort_order>
+								<action>showroomadmin/adminhtml_question</action>
+							</question>
+							<showroom module="showroom" translate="title">
+								<title>Manage Showroom</title>
+								<sort_order>20</sort_order>
+								<action>showroomadmin/adminhtml_showroom</action>
+							</showroom>
+							<profile module="showroom" translate="title">
+								<title>Manage Profile</title>
+								<sort_order>30</sort_order>
+								<action>showroomadmin/adminhtml_profile</action>
+							</profile>
+							<settings module="showroom" translate="title">
+								<title>Settings</title>
+								<sort_order>1000</sort_order>
+							</settings>
+						</children>
+					</showroom>
+				</children>
+			</admin>
+		</resources>
+	</acl>
+</config>

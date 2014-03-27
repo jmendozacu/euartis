@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+	<default translate="label">
+		<label>WebForms</label>
+	</default>
+	<webforms_index_index>
+		<reference name="head">
+			<action method="addCss">
+				<stylesheet>webforms/form.css</stylesheet>
+			</action>
+			<action method="addCss">
+				<stylesheet>webforms/results.css</stylesheet>
+			</action>
+			<action method="addCss">
+				<stylesheet>webforms/stars.css</stylesheet>
+			</action>
+			<action method="addJs">
+				<script>webforms/stars.js</script>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>calendar/calendar-blue.css</name>
+			</action>
+			<action method="addJs">
+				<script>calendar/calendar.js</script>
+			</action>
+			<action method="addJs">
+				<script>calendar/calendar-setup.js</script>
+			</action>
+			<action method="addJs">
+				<script>prototype/window.js</script>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/default.css</name>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/magento.css</name>
+			</action>
+		</reference>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+		<reference name="content">
+			<block type="core/html_calendar" name="head.calendar" as="calendar" template="page/js/calendar.phtml"/>
+			<block type="webforms/webforms" name="webforms" template="webforms/default.phtml"/>
+		</reference>
+	</webforms_index_index>
+	<contacts_index_index>
+		<reference name="head">
+			<action method="addCss">
+				<stylesheet>webforms/form.css</stylesheet>
+			</action>
+			<action method="addCss">
+				<stylesheet>webforms/results.css</stylesheet>
+			</action>
+			<action method="addCss">
+				<stylesheet>webforms/stars.css</stylesheet>
+			</action>
+			<action method="addJs">
+				<script>webforms/stars.js</script>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>calendar/calendar-blue.css</name>
+			</action>
+			<action method="addJs">
+				<script>calendar/calendar.js</script>
+			</action>
+			<action method="addJs">
+				<script>calendar/calendar-setup.js</script>
+			</action>
+			<action method="addJs">
+				<script>prototype/window.js</script>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/default.css</name>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/magento.css</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="core/html_calendar" name="head.calendar" as="calendar" template="page/js/calendar.phtml"/>
+		</reference>
+	</contacts_index_index>
+	<cms_page>
+		<reference name="head">
+			<action method="addCss">
+				<stylesheet>webforms/results.css</stylesheet>
+			</action>
+			<action method="addCss">
+				<stylesheet>webforms/form.css</stylesheet>
+			</action>
+			<action method="addCss">
+				<stylesheet>webforms/stars.css</stylesheet>
+			</action>
+			<action method="addJs">
+				<script>webforms/stars.js</script>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>calendar/calendar-blue.css</name>
+			</action>
+			<action method="addJs">
+				<script>calendar/calendar.js</script>
+			</action>
+			<action method="addJs">
+				<script>calendar/calendar-setup.js</script>
+			</action>
+			<action method="addJs">
+				<script>prototype/window.js</script>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/default.css</name>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/magento.css</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="core/html_calendar" name="head.calendar" as="calendar" template="page/js/calendar.phtml"/>
+		</reference>
+	</cms_page>
+</layout>

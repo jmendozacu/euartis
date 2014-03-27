@@ -1,0 +1,54 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_layover
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/**
+ * @var Mage_Page_Block_Html_Header $this
+ */
+?>
+
+<div class="header-container">
+    <div id="header" class="header">
+        <div class="menu-bar">
+            <ul class="menu">
+                <?php if ($this->helper('customer')->isLoggedIn()): ?>
+                <li><span><?php echo $this->__('Logged in as') ?> </span><a href="<?php echo $this->getUrl('customer/account') ?>" class="name"><?php echo $this->htmlEscape(Mage::getSingleton('customer/session')->getCustomer()->getName()) ?></a></li>
+                <li><a href="<?php echo $this->getUrl('customer/account/logout') ?>"><?php echo $this->__('Logout') ?></a></li>
+                <?php else: ?>
+                <li><a href="<?php echo $this->getUrl('customer/account/login') ?>"><?php echo $this->__('Login') ?></a></li>
+                <?php endif ?>
+                
+                <li><a href="<?php echo $this->getUrl('customer/account') ?>"><?php echo $this->__('My Account') ?></a></li>
+                <li><a href="<?php echo $this->getUrl('wishlist') ?>"><?php echo $this->__('My Wishlist') ?></a></li>
+                <?php echo $this->getChildHtml('cart_header') ?>
+            </ul>
+        </div>
+        <div class="rdmenu"><!--<a href="http://jusloungin.co.uk/cooperation">Cooperation</a> | <a href="http://jusloungin.co.uk/designers">Designers</a> | <a href="http://jusloungin.co.uk/showroom">Showroom</a> | <a href="http://jusloungin.co.uk/abouteuartis">About Us</a> | <a href="http://jusloungin.co.uk/contactus">Contact</a> | <a href="http://jusloungin.co.uk/help">Help</a>--></div>
+        <div class="logo-holder"><strong class="logo"><a href="<?php echo $this->getUrl('/') ?>"><?php echo $this->__('Layover') ?></a></strong></div>
+    </div><!---------------------<?php echo $this->getChildHtml('topSearch') ?>------------->
+
+</div>
+<div class="nav-container">
+<?php echo $this->getChildHtml('topMenu') ?>
+</div>

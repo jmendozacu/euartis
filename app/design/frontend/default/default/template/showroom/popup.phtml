@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<?php $cssfile=$this->getSkinUrl(Mage::helper('showroom')->getSwitchedSkinFile());?>
+<link rel="stylesheet" type="text/css" href='<?php echo $cssfile;?>' media="all" />
+<?php $display_type = Mage::helper('showroom')->getGeneralConfig('required_register');?>
+<?php if($this->isDisplayed()): ?>
+<div id="showroom_popup_mask" style="filter:alpha(opacity=80)">
+</div>
+<div id="showroom_popup_div">
+<?php if($display_type == 2): ?>
+<div id="showroom_popup_close"><a href="javascript:closePopup()"><h3><?php echo $this->__('Close');?> [X] &nbsp; </h3></a></div>
+<?php endif?>
+<h1><?php echo $this->__(Mage::helper('showroom')->getPopupConfig('popup_style')) ; ?></h1>
+<h2><?php echo $this->__(Mage::helper('showroom')->getPopupConfig('popup_title')) ; ?></h2>
+<h6><?php echo $this->__('If you have an account . Click ') ; ?><a href="<?php echo $this->getUrl('customer/account/login/')?>"><?php echo $this->__('here '); ?></a><?php echo $this->__('to Log in ') ;?></h6>
+<div class="popup-content">
+<label><?php echo $this->__(Mage::helper('showroom')->getPopupConfig('popup_welcome')) ;?></label>
+<div class="step step1"><strong>1</strong><span><?php echo $this->__(Mage::helper('showroom')->getPopupConfig('popup_step_one'));?></span></div>
+<div class="step step2"><strong>2</strong><span><?php echo $this->__(Mage::helper('showroom')->getPopupConfig('popup_step_two'));?></span></div>
+<div class="step step3"><strong>3</strong><span><?php echo $this->__(Mage::helper('showroom')->getPopupConfig('popup_step_three'));?></span></div>
+</div>
+
+<div class="actions">
+<button type="button" title="<?php echo $this->__('GET STARTED NOW') ?>" class="button"  onclick="setLocation('<?php echo $this->getUrl('showroom/create/index')?>')"><span><span><?php echo $this->__('GET STARTED NOW') ?></span></span></button>
+</div>
+</div>
+<?php endif ?>
+<script type="text/javascript">
+    //<![CDATA[
+        function closePopup(){
+			var url = '<?php echo $this->getUrl('showroom/index/close')?>';
+			var request = new Ajax.Request(url,{
+					onSuccess: function(transport){
+						if(transport.status == 200){
+							$('showroom_popup_mask').style.zIndex = 0;
+							$('showroom_popup_mask').style.display = 'none';
+							$('showroom_popup_div').style.display = 'none';
+						}
+					}
+				}
+			);
+		}
+    //]]>
+</script>

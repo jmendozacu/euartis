@@ -1,0 +1,35 @@
+.webforms-fields-comment{
+	margin-top:4px; 
+	line-height:1.3em; 
+	color:#666;
+	font-size:.9em;
+}
+
+.group-select li textarea{
+	height:10em;
+}
+
+.webforms-calendar{
+	position:relative;
+}
+.webforms-calendar-button{
+	position:absolute;
+	top: 3px;
+	right: 3px;
+	background:url(calendar.gif) left top no-repeat;
+	width:14px;
+	height:14px;
+}
+ul.webforms-errors-list{
+	margin:5px;
+	padding:5px;
+	list-style-type: disc;
+	list-style-position: inside;
+}
+ul.webforms-errors-list li {
+	margin-bottom:5px;
+}
+p.webforms-error-message {
+	margin: 10px;
+	text-align:center;
+}

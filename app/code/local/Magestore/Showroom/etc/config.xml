@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category 	Magestore
+ * @package 	Magestore_Showroom
+ * @copyright 	Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license 	http://www.magestore.com/license-agreement.html
+ */
+-->
+<config>
+    <modules>
+        <Magestore_Showroom>
+            <version>0.1.0</version>
+        </Magestore_Showroom>
+    </modules>
+    <frontend>
+        <routers>
+            <showroom>
+                <use>standard</use>
+                <args>
+                    <module>Magestore_Showroom</module>
+                    <frontName>showroom</frontName>
+                </args>
+            </showroom>
+        </routers>
+        <layout>
+            <updates>
+                <showroom>
+                    <file>showroom.xml</file>
+                </showroom>
+            </updates>
+        </layout>
+		<translate>
+            <modules>
+                <Magestore_Showroom>
+                    <files>
+                        <default>Magestore_Showroom.csv</default>
+                    </files>
+                </Magestore_Showroom>
+            </modules>
+        </translate>
+		<events>
+			<controller_action_predispatch>
+				<observers>
+					<showroom_observers>
+						<class>showroom/observer</class>
+						<method>controllerActionPredispatch</method>
+					</showroom_observers>
+				</observers>
+			</controller_action_predispatch>
+            <showroom_change_product>
+                <observers>
+                    <showroom_observers>
+                        <class>showroom/observer</class>
+                        <method>sendMailFollows</method>
+                    </showroom_observers>
+                </observers>
+            </showroom_change_product>
+            <!--controller_action_layout_generate_blocks_after>
+                <observers>
+                    <showroom_generate_blocks_after>
+                        <type>singleton</type>
+                        <class>showroom/observer</class>
+                        <method>generateBlocksAfter</method>
+                    </showroom_generate_blocks_after>                    
+                </observers>                
+            </controller_action_layout_generate_blocks_after-->
+		</events>
+    </frontend>
+    <admin>
+        <routers>
+			<showroomadmin>
+				<use>admin</use>
+				<args>
+					<module>Magestore_Showroom</module>
+					<frontName>showroomadmin</frontName>
+				</args>
+			</showroomadmin>
+        </routers>
+    </admin>
+    <adminhtml>
+		<layout>
+			<updates>
+				<showroom>
+					<file>showroom.xml</file>
+				</showroom>
+			</updates>
+		</layout>
+		<translate>
+            <modules>
+                <Magestore_Showroom>
+                    <files>
+                        <default>Magestore_Showroom.csv</default>
+                    </files>
+                </Magestore_Showroom>
+            </modules>
+        </translate>
+		<events>
+			<showroom_question_answer_save_before>
+                <observers>
+                    <showroom_answer_save_before>
+                        <class>showroom/observer</class>
+                        <method>showroom_question_answer_save_before</method>
+                    </showroom_answer_save_before>
+                </observers>
+            </showroom_question_answer_save_before>
+			<showroom_question_answer_save_after>
+                <observers>
+                    <showroom_answer_save_after>
+                        <class>showroom/observer</class>
+                        <method>showroom_question_answer_save_after</method>
+                    </showroom_answer_save_after>
+                </observers>
+            </showroom_question_answer_save_after>
+		</events>
+    </adminhtml>   
+    <global>
+        <models>
+            <showroom>
+                <class>Magestore_Showroom_Model</class>
+                <resourceModel>showroom_mysql4</resourceModel>
+            </showroom>
+            <showroom_mysql4>
+                <class>Magestore_Showroom_Model_Mysql4</class>
+                <entities>
+                    <showroom>
+                        <table>showroom</table>
+                    </showroom>
+					<question>
+						<table>showroom_question</table>
+					</question>
+					<questionvalue>
+						<table>showroom_question_value</table>
+					</questionvalue>
+					<answer>
+						<table>showroom_question_answer</table>
+					</answer>
+					<answervalue>
+						<table>showroom_question_answer_value</table>
+					</answervalue>
+                    <followers>
+                        <table>showroom_following</table>
+                    </followers>
+                    <showroomproduct>
+                        <table>showroom_product</table>
+                    </showroomproduct>
+                    <showroomprofile>
+                        <table>showroom_profile</table>
+                    </showroomprofile>
+					<showroomanswer>
+						<table>showroom_answer</table>
+					</showroomanswer>
+                </entities>
+            </showroom_mysql4>
+        </models>
+        <resources>
+            <showroom_setup>
+                <setup>
+                    <module>Magestore_Showroom</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </showroom_setup>
+            <showroom_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </showroom_write>
+            <showroom_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </showroom_read>
+        </resources>
+        <blocks>
+            <showroom>
+                <class>Magestore_Showroom_Block</class>
+            </showroom>
+        </blocks>
+        <helpers>
+            <showroom>
+                <class>Magestore_Showroom_Helper</class>
+            </showroom>
+        </helpers>
+		<template>
+           <email>
+                <showroom_email_email_template translate="label" module="showroom">
+                <label>Email follow template</label>
+                <file>showroom/email_follows.html</file>
+                <type>html</type>
+                </showroom_email_email_template>
+          </email>
+        </template>
+		<!--index>
+            <indexer>
+                <showroom_indexer>
+                    <model>showroom/indexer</model>
+                    <depends>
+                        <catalog_product />
+                    </depends>
+                </showroom_indexer>
+            </indexer>
+        </index-->
+    </global>
+    <default>
+        <showroom>
+            <general>
+                <enable>1</enable>
+                <template>1</template>
+                <required_register>3</required_register>
+                <size_image_product>135x135</size_image_product>
+            </general>
+            <showroom>
+                <status_showroom>1</status_showroom>
+                <number_column_product>3</number_column_product>
+                <number_row_loadajax>2</number_row_loadajax>
+                <limit_showroomlisting>24</limit_showroomlisting>
+                <limit_product_display>4</limit_product_display>
+                <question_per_page>5</question_per_page>
+                <cookie_expired_time>60</cookie_expired_time>
+            </showroom>
+            <refer>
+                <description>Visit this showroom and get your own style!</description>
+                <invite_message>Who we are and how we bring you the latest style every month.</invite_message>
+            </refer>
+            <email>
+                <email_template>showroom_email_email_template</email_template>
+                <sender>admin@gmail.com</sender>
+            </email>
+            <popup>
+                <popup_style>Get style</popup_style>
+                <popup_title>Personalized</popup_title>
+                <popup_welcome>Welcome to your own personal style paradise</popup_welcome>
+                <popup_step_one>Take our quick style quiz</popup_step_one>
+                <popup_step_two>Discover your personal style profile</popup_step_two>
+                <popup_step_three>Take our quick style quiz</popup_step_three>
+            </popup>
+        </showroom>
+    </default>
+	<!--websites>
+		<admin>
+			<dev>
+				<debug>
+					<template_hints>1</template_hints>
+					<template_hints_blocks>1</template_hints_blocks>
+				</debug>
+			</dev>
+		</admin>
+	</websites-->
+</config>

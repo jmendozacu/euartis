@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <ThemeTeam_AjaxCart>
+            <version>0.1.0</version>
+        </ThemeTeam_AjaxCart>
+    </modules>
+    <global>
+        <rewrite>
+            <themeteam_ajaxcart_checkout_cart>
+                <from><![CDATA[#^/checkout/cart/#]]></from>
+                <to>/ajaxcart/checkout_cart/</to>
+            </themeteam_ajaxcart_checkout_cart>
+        </rewrite>
+    </global>
+    <frontend>
+        <routers>
+            <themeteam_ajaxcart>
+                <use>standard</use>
+                <args>
+                    <module>ThemeTeam_AjaxCart</module>
+                    <frontName>ajaxcart</frontName>
+                </args>
+            </themeteam_ajaxcart>
+        </routers>
+    </frontend>
+</config>

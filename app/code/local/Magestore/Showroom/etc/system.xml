@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category 	Magestore
+ * @package 	Magestore_Showroom
+ * @copyright 	Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license 	http://www.magestore.com/license-agreement.html
+ */
+-->
+<config>
+    <tabs>
+        <magestore translate="label">
+            <label>Magestore Extension</label>
+            <sort_order>400</sort_order>
+        </magestore>
+    </tabs>
+    <sections>
+        <showroom translate="label" module="showroom">
+            <class>separator-top</class>
+            <label>Showroom</label>
+            <tab>magestore</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>299</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label">
+                    <label>General Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                    <!--		
+                        <enable translate="label">
+                            <label>Enable</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>1</sort_order>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </enable>
+                    -->
+                        <template translate="label">
+                            <label>Showroom style</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>2</sort_order>
+                            <source_model>showroom/template</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </template>
+                        <required_register translate="label">
+                            <label>Show popup to create showroom</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>23</sort_order>
+                            <source_model>showroom/popup</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </required_register>
+                        <size_image_product translate="label">
+                            <label>Size of product image in showroom</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>34</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>{Width}x{height} example: 135x135.<![CDATA[<br/>]]> This is the size of product image displayed on Overview, View all and Edit showroom pages.</comment>
+                        </size_image_product>
+                    </fields>				
+                </general>
+                <showroom translate="label">
+                    <label>Showroom Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <status_showroom translate="label">
+                            <label>Default showroom privacy</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>1</sort_order>
+                            <source_model>showroom/statusshomroom</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>The default privacy of showroom when it is created.</comment>
+                        </status_showroom>
+                        <number_column_product translate="label">
+                            <label>Number of products per row on Product Grid page</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>The number of products in each column shown on Product Grid page.</comment>
+                        </number_column_product>
+                        <number_row_loadajax translate="label">
+                            <label>Number of additional rows displayed when clicking view more</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>The number of additional rows displayed when customer clicks on View more link in Edit Showroom page</comment>
+                        </number_row_loadajax>
+                        <limit_showroomlisting translate="label">
+                            <label>Maximum number of showrooms on Showroom listing page</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </limit_showroomlisting>
+                        <limit_product_display translate="label">
+                            <label>Number of products in each category shown on Overview page</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </limit_product_display>
+                        <category translate="label">
+                            <label>Select category to display in showroom</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>4</sort_order>
+                            <source_model>showroom/category</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Press Ctrl to select multiple categories</comment>
+                        </category>
+                        <question_per_page>
+                            <label>Number of questions on each page </label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>The number of question displayed on each page when creating showroom</comment>
+                        </question_per_page>
+                        <cookie_expired_time>
+                            <label>Expiration time of cookie (days)</label>
+                            <frontend_type>text</frontend_type>                   
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Expiration time of cookie saved in client browser</comment>
+                        </cookie_expired_time>
+                    </fields>				
+                </showroom>
+                <refer  translate="label">
+                    <label>Facebook Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <facebook_app_id translate="label">
+                            <label>Facebook Application ID </label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[<a href="http://developers.facebook.com/setup/" target="_bank">Register</a>]]>
+                            </comment>
+                        </facebook_app_id>
+                        <facebook_app_secret translate="label">
+                            <label>Facebook Application Secret </label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </facebook_app_secret>
+                        <description translate="label">
+                            <label>Message shared on Facebook</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </description>
+						<invite_message translate="label">
+                            <label>Message to invite friends on Facebook</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </invite_message>
+                    </fields>				
+                </refer>
+                <email  translate="label">
+                    <label>Email Template Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>4</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <email_template translate="label">
+                            <label>Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Email is sent to customer when there is any change in showrooms that he follows</comment>
+                        </email_template>
+                        <sender translate="label">
+                            <label>Email Sender</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </sender>
+                    </fields>				
+                </email>
+                <popup  translate="label">
+                    <label>Popup Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>5</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <popup_style translate="label">
+                            <label>Popup Title</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <!--comment><![CDATA[<a id="link-view-6" href="javascript:void(0)" target="_bank">What is this?</a><img id="image-view-6" src="http://demo-extension.magestore.com/sandbox/showroom/media/showroom/title.png" /><script type="text/javascript"> var tip = new Tooltip("link-view-6", "image-view-6");
+            </script><br/>]]></comment-->
+                        </popup_style>
+                        <popup_title translate="label">
+                            <label>Popup Subtitle</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </popup_title>
+                        <popup_welcome translate="label">
+                            <label>Welcome message</label>
+                            <frontend_type>textarea</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </popup_welcome>
+                        <popup_step_one translate="label">
+                            <label>First Step</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </popup_step_one>
+                        <popup_step_two translate="label">
+                            <label>Second Step</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </popup_step_two>
+                        <popup_step_three translate="label">
+                            <label>Third Step</label>
+                            <frontend_type>text</frontend_type>
+							<frontend_model>showroom/adminhtml_showroom_renderer_config</frontend_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </popup_step_three>
+                    </fields>               
+                </popup>
+            </groups>
+        </showroom>
+    </sections>
+</config>

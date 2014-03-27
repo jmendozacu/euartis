@@ -1,0 +1,60 @@
+<script type="text/javascript">
+//<![CDATA[
+var webform_<?php echo Mage::registry('webform')->getId()?> = new VarienForm('webform_<?php echo Mage::registry('webform')->getId()?>', <?php echo (int)$this->getData('focus')?>);
+var webformSubmit = function(){
+	var form = webform_<?php echo Mage::registry('webform')->getId()?>;
+	if(form.validator && form.validator.validate()){
+		form.submit();
+		<?php if($this->getAjax()) { ?>
+		$('webform_<?php echo Mage::registry('webform')->getId()?>_submit_button').hide();
+		$('webform_<?php echo Mage::registry('webform')->getId()?>_sending_data').show();
+		<?php } ?>
+	}
+}
+
+<?php if($this->getAjax()) { ?>
+var iframe = $('webform_<?php echo Mage::registry('webform')->getId()?>_iframe');
+iframe.observe('load',function(){
+	var doc = this.contentDocument ? this.contentDocument: this.contentWindow.document;
+	var json = {success:false};
+	if(doc.body.innerHTML.unfilterJSON())
+		json = doc.body.innerHTML.evalJSON();
+	else return;
+	if(json.success > 0){
+		if(json.redirect_url){
+			$('webform_<?php echo Mage::registry('webform')->getId()?>_progress_text').update('<?php echo $this->__('Redirecting')?>');
+			window.location = json.redirect_url;
+			return;
+		}
+		$('webform_<?php echo Mage::registry('webform')->getId()?>_progress_text').update('<?php echo $this->__('Complete')?>');
+		Effect.Fade('webform_<?php echo Mage::registry('webform')->getId()?>_form',{
+			duration: 0.5, from:1, to:0,
+			afterFinish: function(){
+				$('webform_<?php echo Mage::registry('webform')->getId()?>_success_text').update(json.success_text.unescapeHTML()).show();
+				Effect.Fade('webform_<?php echo Mage::registry('webform')->getId()?>_success_text',{
+					duration:0.5, from:0, to:1
+				});
+			}
+			
+		});
+	} else {
+		$('webform_<?php echo Mage::registry('webform')->getId()?>_sending_data').hide();
+		$('webform_<?php echo Mage::registry('webform')->getId()?>_submit_button').show();
+		if(json.errors && typeof(json.errors) == "string"){
+			Dialog.alert(json.errors.unescapeHTML(),{
+				title: "<?php echo $this->__('Error(s) occured')?>",
+				className: "magento",
+				width:300, 
+				buttonClass: "button",
+				okLabel: "<?php echo $this->__('Close')?>",
+				destroyOnClose: true, 
+				recenterAuto:true
+			})
+		} else {
+			alert('<?php echo $this->__('Error(s) occured')?>');
+		}
+	}
+});
+<?php } ?>
+//]]>
+</script>
